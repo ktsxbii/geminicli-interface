@@ -130,8 +130,9 @@ const App: React.FC = () => {
     const rect = userBtnRef.current.getBoundingClientRect();
     return {
       position: 'fixed' as const,
-      left: rect.left + 'px',
-      bottom: (window.innerHeight - rect.top + 10) + 'px',
+      left: '12px',
+      bottom: (window.innerHeight - rect.top + 8) + 'px',
+      zIndex: 9999
     };
   };
 

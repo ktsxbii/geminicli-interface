@@ -293,13 +293,12 @@ body {
   position: fixed;
   background-color: var(--bg-input);
   border: 1px solid var(--border-strong);
-  border-radius: var(--radius-lg);
+  border-radius: 12px;
   padding: 8px;
   box-shadow: var(--shadow-xl);
-  z-index: 9999;
   min-width: 240px;
   backdrop-filter: blur(12px);
-  animation: slideInUp 0.2s ease-out;
+  z-index: 9999;
 }
 
 .menu-item {
