@@ -148,7 +148,7 @@ body {
   display: flex;
   align-items: center;
   width: 100%;
-  height: 40px;
+  height: 36px; /* Match vertical distance rule */
 }
 
 .collapse-row {
@@ -160,9 +160,9 @@ body {
 }
 
 .collapse-btn {
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
+  width: 32px;
+  height: 32px;
+  margin-right: 14px;
   background: transparent;
   border: none;
   color: var(--white);
@@ -227,16 +227,6 @@ body {
   border-radius: var(--radius-md);
 }
 
-.new-chat-btn {
-  margin: 0 8px;
-  width: calc(100% - 16px);
-}
-
-.sidebar.collapsed .new-chat-btn {
-  margin: 0 10px;
-  width: 40px;
-}
-
 .sidebar-scroll {
   flex: 1;
   overflow-y: auto;
@@ -283,11 +273,6 @@ body {
 .user-profile-btn {
   margin: 0 8px;
   width: calc(100% - 16px);
-}
-
-.sidebar.collapsed .user-profile-btn {
-  margin: 0 10px;
-  width: 40px;
 }
 
 .avatar {
