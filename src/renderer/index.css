@@ -35,6 +35,7 @@
   --input-max-width: 840px;
   
   /* Effects */
+  --sidebar-transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -127,7 +128,7 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width var(--sidebar-transition);
   border-right: 1px solid var(--border-subtle);
   overflow: visible;
   position: relative;
@@ -139,7 +140,7 @@ body {
 }
 
 .sidebar-header {
-  padding: 12px 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
 }
@@ -152,7 +153,7 @@ body {
 }
 
 .collapse-row {
-  justify-content: flex-end;
+  justify-content: flex-start; /* Aligned to left for stationarity */
 }
 
 .sidebar.collapsed .collapse-row {
@@ -160,9 +161,9 @@ body {
 }
 
 .collapse-btn {
-  width: 32px;
-  height: 32px;
-  margin-right: 14px;
+  width: 60px; /* Mini sidebar width */
+  height: 36px;
+  margin-right: 0;
   background: transparent;
   border: none;
   color: var(--white);
@@ -170,31 +171,32 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: var(--transition);
+  transition: var(--sidebar-transition);
 }
 
 .sidebar.collapsed .collapse-btn {
-  margin-right: 0;
+  width: 60px;
 }
 
 .sidebar-btn {
   display: flex;
   align-items: center;
-  width: calc(100% - 16px);
-  height: 32px;
-  margin: 0 8px;
+  width: calc(100% - 8px);
+  height: 36px;
+  margin: 0 8px 0 0;
   background: transparent;
   border: none;
   color: var(--white);
   cursor: pointer;
   padding: 0;
-  transition: var(--transition);
-  border-radius: 8px;
+  transition: var(--sidebar-transition);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
 }
 
 .sidebar.collapsed .sidebar-btn {
-  margin: 0 14px;
-  width: 32px;
+  margin: 0;
+  width: 60px;
+  border-radius: 0;
 }
 
 .btn-icon-box {
@@ -224,14 +226,14 @@ body {
 
 .new-chat-btn:hover, .user-profile-btn:hover, .collapse-btn:hover {
   background-color: var(--bg-hover);
-  border-radius: var(--radius-md);
 }
 
 .sidebar-scroll {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0 8px;
+  padding: 0;
+  transition: opacity var(--sidebar-transition);
 }
 
 .sidebar.collapsed .sidebar-scroll {
@@ -240,7 +242,7 @@ body {
 }
 
 .sidebar-section {
-  margin-bottom: 24px;
+  margin-bottom: 36px; /* 36px vertical rhythm */
 }
 
 .sidebar-section h3 {
@@ -255,8 +257,9 @@ body {
 
 .list-item {
   height: 36px;
-  padding: 0 12px;
-  border-radius: var(--radius-md);
+  padding: 0 12px 0 60px; /* Align text with other buttons */
+  margin: 0 8px 0 0;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
   cursor: pointer;
   font-size: 0.9rem;
   color: var(--white);
@@ -265,14 +268,24 @@ body {
   justify-content: space-between;
 }
 
+.list-item span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-item:hover {
+  background-color: var(--bg-hover);
+}
+
 .sidebar-footer {
-  padding: 12px 0;
+  padding: 0;
   border-top: 1px solid var(--border-subtle);
 }
 
 .user-profile-btn {
-  margin: 0 8px;
-  width: calc(100% - 16px);
+  margin: 0 8px 0 0;
+  width: calc(100% - 8px);
 }
 
 .avatar {

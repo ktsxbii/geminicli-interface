@@ -1,0 +1,57 @@
+<h2>Proportions & Alignment Audit</h2>
+<p class="subtitle">I've mapped out the current geometry of your app. Which area feels most "out of balance" to you right now?</p>
+
+<div class="options">
+  <div class="option" data-choice="sidebar" onclick="toggleSelect(this)">
+    <div class="letter">1</div>
+    <div class="content">
+      <h3>Sidebar & Navigation</h3>
+      <p>Vertical rhythm (36px rule), icon centering, and transition drift between collapsed/expanded states.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="header" onclick="toggleSelect(this)">
+    <div class="letter">2</div>
+    <div class="content">
+      <h3>Header & Title Bar</h3>
+      <p>Branding alignment, window control spacing, and visual weight relative to the sidebar.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="chat" onclick="toggleSelect(this)">
+    <div class="letter">3</div>
+    <div class="content">
+      <h3>Chat & Input Area</h3>
+      <p>Message bubble width (currently 85%), input container padding, and inline image preview scaling.</p>
+    </div>
+  </div>
+</div>
+
+<div class="mockup">
+  <div class="mockup-header">Current Proportions (Wireframe)</div>
+  <div class="mockup-body" style="background: #0d0d0d; color: white; padding: 20px; font-family: sans-serif;">
+    <div style="border: 1px solid #404040; height: 300px; display: flex; flex-direction: column;">
+      <!-- Title Bar -->
+      <div style="height: 40px; border-bottom: 1px solid #404040; display: flex; align-items: center; padding: 0 10px; justify-content: space-between;">
+        <div style="display: flex; gap: 5px;"><div style="width: 10px; height: 10px; background: #404040;"></div><div style="width: 10px; height: 10px; background: #404040;"></div></div>
+        <div style="font-size: 10px; letter-spacing: 2px;">GEMINI</div>
+        <div style="width: 40px;"></div>
+      </div>
+      <div style="flex: 1; display: flex;">
+        <!-- Sidebar -->
+        <div style="width: 60px; border-right: 1px solid #404040; display: flex; flex-direction: column; align-items: center; padding: 10px 0; gap: 10px;">
+          <div style="width: 30px; height: 30px; border: 1px solid white;"></div>
+          <div style="width: 30px; height: 30px; border: 1px solid white;"></div>
+          <div style="flex: 1;"></div>
+          <div style="width: 30px; height: 30px; background: #404040;"></div>
+        </div>
+        <!-- Main -->
+        <div style="flex: 1; display: flex; flex-direction: column; padding: 20px;">
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+            <div style="width: 70%; height: 40px; background: #1f1f1f; border-radius: 10px; align-self: flex-start;"></div>
+            <div style="width: 60%; height: 30px; background: #262626; border-radius: 10px; align-self: flex-end;"></div>
+          </div>
+          <div style="height: 50px; background: #262626; border-radius: 20px; margin-top: 10px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
