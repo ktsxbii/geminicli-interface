@@ -193,6 +193,10 @@ body, html {
   transition: var(--transition);
 }
 
+.hidden {
+  display: none !important;
+}
+
 .gemini-logo-static {
   position: absolute;
   left: 0;
@@ -205,11 +209,6 @@ body, html {
   color: var(--white);
   pointer-events: none;
   z-index: 1;
-  transition: opacity 0.3s ease;
-}
-
-.gemini-logo-static.hidden {
-  opacity: 0;
 }
 
 /* Icon Transition Logic */
