@@ -473,6 +473,23 @@ body, html {
   background: transparent !important;
 }
 
+.session-item.is-editing {
+  background-color: var(--bg-hover);
+}
+
+.session-edit-input {
+  background: transparent;
+  border: none;
+  color: var(--white);
+  font-family: var(--font-sidebar);
+  font-size: 0.8125rem;
+  letter-spacing: 0.05em;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  outline: none;
+}
+
 .placeholder {
   height: 36px;
   padding-left: 20px;

@@ -53,22 +53,26 @@ function saveSessions(sessions: SessionMetadata[]) {
 }
 
 function ensureSessionWorkspace(existingId?: string) {
-  const sessions = loadSessions();
+  const { sessionsFile } = getPaths();
+  let sessions = loadSessions();
   
-  // If no sessions exist, seed default 'Chat' and 'test123' sessions
-  if (sessions.length === 0) {
-    const chatID = uuidv4();
-    const testID = uuidv4();
-    sessions.push(
-      { id: chatID, name: 'Chat', createdAt: Date.now(), lastActive: Date.now() },
-      { id: testID, name: 'test123', createdAt: Date.now(), lastActive: Date.now() }
-    );
+  // ONLY seed defaults if the file doesn't exist yet (first run)
+  if (!fs.existsSync(sessionsFile)) {
+    const defaults = ['Chat', 'test123', 'testagain'];
+    defaults.forEach(name => {
+      sessions.push({
+        id: uuidv4(),
+        name: name,
+        createdAt: Date.now(),
+        lastActive: Date.now(),
+      });
+    });
     saveSessions(sessions);
-    currentSessionId = chatID;
-  } else if (!existingId) {
-    // Default to the most recently active session
+  }
+
+  if (!existingId) {
     const mostRecent = [...sessions].sort((a, b) => b.lastActive - a.lastActive)[0];
-    currentSessionId = mostRecent.id;
+    currentSessionId = mostRecent ? mostRecent.id : uuidv4();
   } else {
     currentSessionId = existingId;
   }
