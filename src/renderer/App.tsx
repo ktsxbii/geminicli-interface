@@ -163,10 +163,17 @@ const App: React.FC = () => {
       <div className="app-layout">
         {/* SIDEBAR */}
         <aside className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
-          <header className="sidebar-header">
-            {/* COLLAPSE ROW (TOP RIGHT WHEN EXPANDED) */}
-            <div className="sidebar-row collapse-row">
-               <button className="collapse-btn" onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}>
+          <div className="sidebar-content">
+            <div className="sidebar-row collapse-container">
+               <button className="collapse-btn anchored" onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}>
+                 <div className="btn-icon-box">
+                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                     <line x1="9" y1="3" x2="9" y2="21" />
+                   </svg>
+                 </div>
+               </button>
+               <button className="collapse-btn floating" onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}>
                  <div className="btn-icon-box">
                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
@@ -175,7 +182,7 @@ const App: React.FC = () => {
                  </div>
                </button>
             </div>
-            {/* NEW CHAT ROW (UNDER COLLAPSE) */}
+            
             <div className="sidebar-row">
                <button className="sidebar-btn new-chat-btn" onClick={handleNewChat}>
                  <div className="btn-icon-box">
@@ -187,37 +194,58 @@ const App: React.FC = () => {
                  <span>New chat</span>
                </button>
             </div>
-          </header>
 
-          <div className="sidebar-scroll">
-            <section className="sidebar-section">
-              <h3>Projects</h3>
-              <div className="sidebar-list">
-                {sessions.filter(s => s.project).length === 0 ? (
-                  <div className="placeholder" style={{padding: '0 12px'}}>No projects yet</div>
-                ) : (
-                  sessions.filter(s => s.project).map(s => (
-                    <div key={s.id} className="list-item" onContextMenu={(e) => handleSidebarContextMenu(e, s.id)}><span>{s.project}</span></div>
-                  ))
-                )}
-              </div>
-            </section>
-            <section className="sidebar-section">
-              <h3>History</h3>
-              <div className="sidebar-list">
-                {sessions.filter(s => !s.project).length === 0 ? (
-                  <div className="placeholder" style={{padding: '0 12px'}}>No history yet</div>
-                ) : (
-                  sessions.filter(s => !s.project).map(s => (
-                    <div key={s.id} className="list-item" onContextMenu={(e) => handleSidebarContextMenu(e, s.id)}><span>{s.name}</span></div>
-                  ))
-                )}
-              </div>
-            </section>
-          </div>
+            <div className="sidebar-scroll">
+              <section className="sidebar-section">
+                <h3>Recents</h3>
+                <div className="sidebar-list">
+                  <div className="placeholder" style={{paddingLeft: '60px', opacity: 0.5, fontSize: '0.8rem'}}>No recent chats</div>
+                </div>
+              </section>
 
-          <footer className="sidebar-footer">
-            <div className="sidebar-row">
+              <section className="sidebar-section">
+                <h3>Pins</h3>
+                <div className="sidebar-list">
+                  <div className="placeholder" style={{paddingLeft: '60px', opacity: 0.5, fontSize: '0.8rem'}}>No pinned items</div>
+                </div>
+              </section>
+
+              <section className="sidebar-section">
+                <h3>History</h3>
+                <div className="sidebar-list">
+                  {sessions.length === 0 ? (
+                    <div className="placeholder" style={{paddingLeft: '60px', opacity: 0.5, fontSize: '0.8rem'}}>No history yet</div>
+                  ) : (
+                    sessions.map(s => (
+                      <div key={s.id} className="list-item" onContextMenu={(e) => handleSidebarContextMenu(e, s.id)}>
+                        <span>{s.name || s.project || 'Untitled Chat'}</span>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </section>
+            </div>
+
+            <footer className="sidebar-footer">
+              <button className="sidebar-btn" onClick={() => {}}>
+                <div className="btn-icon-box">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                  </svg>
+                </div>
+                <span>Settings</span>
+              </button>
+              <button className="sidebar-btn" onClick={() => {}} style={{color: '#ff4d4d'}}>
+                <div className="btn-icon-box">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                  </svg>
+                </div>
+                <span>Logout</span>
+              </button>
               <button ref={userBtnRef} className="sidebar-btn user-profile-btn" onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}>
                 <div className="btn-icon-box">
                   <div className="avatar">JD</div>
@@ -225,16 +253,7 @@ const App: React.FC = () => {
                 <span>John Doe</span>
               </button>
             </div>
-            
-            {isUserMenuOpen && (
-              <div className="popover-menu" ref={userMenuRef} style={getUserMenuStyles()}>
-                <div className="menu-item">⚙️ Settings</div>
-                <div className="menu-item">👤 Profile</div>
-                <div className="menu-item">🎨 Appearance</div>
-                <div className="menu-item" style={{borderTop: '1px solid var(--border-subtle)', color: '#ff4d4d'}}>🚪 Log out</div>
-              </div>
-            )}
-          </footer>
+          </div>
         </aside>
 
         <main className="main-content">
