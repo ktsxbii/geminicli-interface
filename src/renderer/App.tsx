@@ -252,7 +252,7 @@ const App: React.FC = () => {
                 </div>
                 <span>John Doe</span>
               </button>
-            </div>
+            </footer>
           </div>
         </aside>
 
