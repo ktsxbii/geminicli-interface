@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-04-23
+
+### Added
+- **Gemini Logo Integration**: Replaced the static expand button with a high-fidelity Gemini sparkle logo that anchors the sidebar.
+- **Context-Aware Transitions**:
+  - Implemented seamless hover transitions from the Gemini logo to the expand icon in compressed mode.
+  - Added a "nearby radius" hover effect (100px hit area) to trigger the logo-to-icon transition as the cursor approaches.
+- **Enhanced Sidebar Logic**:
+  - **Dynamic Visibility**: The floating compress button now features a delayed fade-in when expanding and an early fade-out when compacting to prevent visual overlap with the anchored logo.
+  - **Static Branding**: In expanded mode, the Gemini logo remains as a static brand element while the functional compress button appears independently on the right edge.
+
+### Fixed
+- **Sidebar State Desync**: Ensured the compress button is always visible when the app launches in expanded mode.
+
 ## [1.0.0] - 2026-04-23
 
 ### Added

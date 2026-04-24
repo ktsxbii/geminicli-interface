@@ -193,27 +193,97 @@ body, html {
   transition: var(--transition);
 }
 
-.collapse-btn:hover {
+.gemini-logo-static {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 60px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--white);
-  background-color: var(--bg-hover);
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity 0.3s ease;
+}
+
+.gemini-logo-static.hidden {
+  opacity: 0;
+}
+
+/* Icon Transition Logic */
+.icon-wrapper {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gemini-logo-inner, .expand-logo {
+  position: absolute;
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.expand-logo {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+/* In Compressed Mode (anchored) */
+.collapse-btn.anchored:hover .gemini-logo-inner {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+.collapse-btn.anchored:hover .expand-logo {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .collapse-btn.anchored {
   left: 0;
-  z-index: 2;
+  z-index: 5;
 }
 
-.collapse-btn.floating {
+.sidebar.collapsed .collapse-btn.anchored::after {
+  content: '';
+  position: absolute;
+  width: 100px;
+  height: 80px;
+  left: 0;
+  top: -16px;
+  background: transparent;
+}
+
+/* In Expanded Mode (floating-trigger) */
+.collapse-btn.floating-trigger {
   right: 0;
   opacity: 1;
-  z-index: 1;
-  transition: opacity 0.2s ease, transform var(--sidebar-transition);
+  z-index: 10;
+  pointer-events: auto;
+  transition: opacity 0.2s ease 0.15s, transform var(--sidebar-transition);
 }
 
-.sidebar.collapsed .collapse-btn.floating {
+/* Show expand icon by default in floating trigger (compress button) */
+.collapse-btn.floating-trigger .gemini-logo-inner {
   opacity: 0;
-  pointer-events: none;
+  transform: scale(0.8);
+}
+
+.collapse-btn.floating-trigger .expand-logo {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* When transitioning from compressed to expanded */
+.sidebar.collapsed .collapse-btn.floating-trigger {
+  opacity: 0;
   transform: translateX(-20px);
+  pointer-events: none;
+  transition: opacity 0.1s ease 0s, transform var(--sidebar-transition);
 }
 
 .sidebar-btn {

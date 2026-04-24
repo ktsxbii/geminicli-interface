@@ -1,33 +1,34 @@
-# Handoff: Gemini Desktop Workspace Overhaul
+# Handoff: Gemini Desktop Workspace (v1.1.0)
 
 ## Project Overview
 A high-fidelity Electron + React wrapper for the Gemini CLI, featuring a "Unified Workspace" architecture where GUI file interactions and CLI terminal execution share the same context.
 
-## Current State
-- **UI/UX**: Premium "Obsidian" grayscale aesthetic completed.
-- **Sidebar**: High-fidelity, zero-drift collapsible sidebar with 60px anchored axis. Perfectly synced 36px line spacing.
-- **Header**: Custom Discord-style title bar with centered "Gemini" branding and transparent window controls.
-- **Chat Interface**: Upgraded to `contenteditable` with inline image previews and an integrated "Person" icon for model selection.
-- **Backend**: Robust session management implemented; app reloads the most recent session by default.
+## Current State: "The Static Anchor"
+- **UI/UX**: Premium "Obsidian" grayscale aesthetic (`#0b0b0b`) with refined typography.
+- **Gemini Logo Anchor**: 
+  - The anchored sidebar button now features a static Gemini sparkle logo.
+  - **Seamless Transitions**: Transitions from logo to expand icon on hover or nearby cursor approach (100px radius).
+- **Dynamic Sidebar Interaction**:
+  - **Delayed Fade-In**: Floating compress button only appears after it clears the logo space.
+  - **Static Expanded Mode**: Gemini logo remains static in expanded mode, while a dedicated compress button handles interactions.
+- **Unified Sync**: Bidirectional file sync with `chokidar`.
+- **Git State**: Version 1.1.0 changes completed.
 
-## Recent Accomplishments
-- **Zero-Drift Icons**: Re-engineered sidebar header and footer to keep icons perfectly locked on the X/Y axis during transitions.
-- **Clipped Menu Fix**: Profile popover now uses `position: fixed` to escape sidebar overflow constraints.
-- **Hardened Sessions**: Added data-type validation to `loadSessions` to prevent "White Screen" crashes from corrupted JSON.
-- **Functionality**: Functional terminal, bidirectional file sync (Chokidar), and native file picking (Plus button).
+## Technical Accomplishments
+- **Zero-Drift Branding**: Unified the Gemini logo into the core axis while allowing for context-aware interaction.
+- **Nearby Hover Trigger**: Implemented a large-radius hover trigger for the compact sidebar to improve discoverability.
+- **Hardened Sessions**: Robust data-type validation for session persistence.
 
-## Key Paths & Tech
-- **Root**: `C:\Users\nexxw\gemini-desktop-workspace`
-- **Main**: `src/main/index.ts` (PTY & Session Orchestration)
-- **Renderer**: `src/renderer/App.tsx` (UI Logic & State)
-- **Styles**: `src/renderer/index.css` (Premium tokens & Effects)
-- **Data**: `sessions.json` located in `%APPDATA%\gemini-desktop-workspace\gemini-workspace`
+## Key Files
+- `src/main/index.ts`: Session management and PTY orchestration.
+- `src/renderer/App.tsx`: UI State, Sidebar transitions, and Branding logic.
+- `src/renderer/index.css`: UI tokens, precision spacing, and zero-drift animations.
 
 ## Next Steps
-1. **Phase 6: Lazy Context Handoff**: Implement the silent `/handoff update` command on session close to preserve AI state between project switches.
-2. **Phase 7: Security Audit**: Sanitize environment variables passed to `node-pty`.
-3. **Conversational Routing**: Fully wire the GUI "Smart Input" to the Gemini CLI prompt engine (currently pipes to PTY, needs higher-level conversational logic).
-4. **Cleanup**: Implement the auto-purger for abandoned `/tmp` workspaces.
+1. **Lazy Context Handoff**: Connect sidebar sessions to a persistent brain that preserves AI context between chat switches using `/handoff update`.
+2. **Conversational Routing**: Fully wire the "Smart Input" to the Gemini CLI prompt engine.
+3. **Security Audit**: Sanitize and restrict environment variables passed to the `node-pty` shell.
+4. **Cleanup**: Implement an auto-purger for abandoned temporary workspaces.
 
 ## Resume Command
 ```powershell
