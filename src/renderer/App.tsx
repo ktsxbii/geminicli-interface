@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Terminal from './components/Terminal';
+import { StarsBackground } from '@/components/ui/stars';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { cn } from '@/lib/utils';
 
 interface SessionMetadata {
   id: string;
@@ -39,11 +42,12 @@ const App: React.FC = () => {
   
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
+  const [inputText, setInputText] = useState("");
 
   const userMenuRef = useRef<HTMLDivElement>(null);
   const userBtnRef = useRef<HTMLButtonElement>(null);
   const modelDropdownRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const editInputRef = useRef<HTMLInputElement>(null);
 
   const refreshSessions = async () => {
@@ -92,21 +96,27 @@ const App: React.FC = () => {
     }
   }, [editingSessionId]);
 
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+    }
+  }, [inputText]);
+
   const handleNewChat = async () => {
     await (window as any).electronAPI.sessions.list(); 
     setMessages([]);
     setInputAssets([]);
-    if (inputRef.current) inputRef.current.innerText = '';
+    setInputText("");
     refreshSessions();
   };
 
   const handleSendMessage = () => {
-    const text = inputRef.current?.innerText.trim();
-    if (!text && inputAssets.length === 0) return;
-    const newMessage: Message = { role: 'user', content: text || '', images: [...inputAssets] };
+    if (!inputText.trim() && inputAssets.length === 0) return;
+    const newMessage: Message = { role: 'user', content: inputText || '', images: [...inputAssets] };
     setMessages(prev => [...prev, newMessage]);
-    (window as any).electronAPI.terminal.sendData(`${text || "Analyze assets"}\n`);
-    if (inputRef.current) inputRef.current.innerText = '';
+    (window as any).electronAPI.terminal.sendData(`${inputText || "Analyze assets"}\n`);
+    setInputText("");
     setInputAssets([]);
   };
 
@@ -146,6 +156,7 @@ const App: React.FC = () => {
   };
 
   const handleDeleteSession = async (id: string) => {
+    setContextMenu(null);
     await (window as any).electronAPI.sessions.delete(id);
     setShowDeleteConfirm(null);
     refreshSessions();
@@ -182,7 +193,7 @@ const App: React.FC = () => {
   };
 
   const renderChatItem = (id: string, name: string) => (
-    <div key={id} className={`list-item session-item ${editingSessionId === id ? 'is-editing' : ''}`} onContextMenu={(e) => handleSidebarContextMenu(e, id)}>
+    <div key={id} className={cn("list-item session-item", editingSessionId === id && "is-editing")} onContextMenu={(e) => handleSidebarContextMenu(e, id)}>
       {editingSessionId === id ? (
         <input 
           ref={editInputRef}
@@ -214,7 +225,7 @@ const App: React.FC = () => {
         </div>
         <div className="title-bar-center">Gemini</div>
         <div className="title-bar-right">
-          <button className={`title-btn terminal-btn ${isTerminalOpen ? 'active' : ''}`} onClick={() => setIsTerminalOpen(!isTerminalOpen)} title="Toggle Terminal"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 17 10 11 4 5" /><line x1="12" y1="19" x2="20" y2="19" /></svg></button>
+          <button className={cn("title-btn terminal-btn", isTerminalOpen && "active")} onClick={() => setIsTerminalOpen(!isTerminalOpen)} title="Toggle Terminal"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 17 10 11 4 5" /><line x1="12" y1="19" x2="20" y2="19" /></svg></button>
           <div className="title-separator" />
           <button className="title-btn window-control" onClick={() => (window as any).electronAPI.window.minimize()}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
           <button className="title-btn window-control" onClick={() => (window as any).electronAPI.window.maximize()}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="5" width="14" height="14" rx="2" ry="2"/></svg></button>
@@ -223,11 +234,11 @@ const App: React.FC = () => {
       </nav>
 
       <div className="app-layout">
-        <aside className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
+        <aside className={cn("sidebar", isSidebarCollapsed && "collapsed")}>
           <div className="sidebar-content">
             <div className="sidebar-row collapse-container">
-               <div className={`gemini-logo-static ${isSidebarCollapsed ? "hidden" : ""}`}><div className="btn-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.85 9.15L22 12L14.85 14.85L12 22L9.15 14.85L2 12L9.15 9.15L12 2Z" /></svg></div></div>
-               <button className={`collapse-btn anchored ${!isSidebarCollapsed ? "hidden" : ""} ${isNearLogo ? "hover-proximity" : ""}`} onClick={() => setIsSidebarCollapsed(false)} title="Expand sidebar">
+               <div className={cn("gemini-logo-static", isSidebarCollapsed && "hidden")}><div className="btn-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.85 9.15L22 12L14.85 14.85L12 22L9.15 14.85L2 12L9.15 9.15L12 2Z" /></svg></div></div>
+               <button className={cn("collapse-btn anchored", !isSidebarCollapsed && "hidden", isNearLogo && "hover-proximity")} onClick={() => setIsSidebarCollapsed(false)} title="Expand sidebar">
                  <div className="btn-icon-box"><div className="icon-wrapper"><svg className="gemini-logo-inner" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.85 9.15L22 12L14.85 14.85L12 22L9.15 14.85L2 12L9.15 9.15L12 2Z" /></svg><svg className="expand-logo" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><line x1="9" y1="3" x2="9" y2="21" /></svg></div></div>
                </button>
                <button className={`collapse-btn floating-trigger`} onClick={() => setIsSidebarCollapsed(true)} title="Collapse sidebar">
@@ -240,7 +251,7 @@ const App: React.FC = () => {
                  <div className="btn-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg></div>
                  <span style={{ fontSize: '0.8125rem', fontWeight: 400, color: 'var(--white)', letterSpacing: '0.05em', fontFamily: 'var(--font-sidebar)' }}>New chat</span>
                </button>
-               <button className={`sidebar-btn terminal-btn ${isTerminalOpen ? 'active' : ''}`} onClick={() => setIsTerminalOpen(!isTerminalOpen)}>
+               <button className={cn("sidebar-btn terminal-btn", isTerminalOpen && "active")} onClick={() => setIsTerminalOpen(!isTerminalOpen)}>
                  <div className="btn-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="18" rx="2" ry="2" /><path d="M7 8l3 3-3 3" /><line x1="12" y1="14" x2="17" y2="14" /></svg></div>
                  <span style={{ fontSize: '0.8125rem', fontWeight: 400, color: 'var(--white)', letterSpacing: '0.05em', fontFamily: 'var(--font-sidebar)', display: 'flex', alignItems: 'center', flex: 1, justifyContent: 'space-between', paddingRight: '12px' }}>
                    Terminal
@@ -258,9 +269,9 @@ const App: React.FC = () => {
                 <section className="sidebar-section fade-in-on-expand">
                   <div className="section-header-row" onClick={() => setIsProjectsExpanded(!isProjectsExpanded)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', paddingLeft: '0' }}>
                     <h3>Projects</h3>
-                    <svg className={`section-chevron ${isProjectsExpanded ? 'expanded' : ''}`} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ transition: 'transform 0.2s ease', transform: isProjectsExpanded ? 'rotate(90deg)' : 'rotate(0deg)', color: 'var(--text-tertiary)' }}><polyline points="9 18 15 12 9 6"/></svg>
+                    <svg className={cn("section-chevron", isProjectsExpanded && "expanded")} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ transition: 'transform 0.2s ease', transform: isProjectsExpanded ? 'rotate(90deg)' : 'rotate(0deg)', color: 'var(--text-tertiary)' }}><polyline points="9 18 15 12 9 6"/></svg>
                   </div>
-                  <div className={`sidebar-list accordion-content ${isProjectsExpanded ? 'expanded' : 'collapsed'}`}>
+                  <div className={cn("sidebar-list accordion-content", isProjectsExpanded ? "expanded" : "collapsed")}>
                     <button className="sidebar-btn" onClick={handleAddProject}>
                       <div className="btn-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 13V9C22 7.89543 21.1046 7 20 7H11.5L9.5 5H4C2.89543 5 2 5.89543 2 7V19C2 20.1046 2.89543 21 4 21H13" /><line x1="18" x2="18" y1="15" y2="23" /><line x1="14" x2="22" y1="19" y2="19" /></svg></div>
                       <span style={{ fontSize: '0.8125rem', fontWeight: 400, letterSpacing: '0.05em', color: 'var(--white)', fontFamily: 'var(--font-sidebar)' }}>New Project</span>
@@ -277,9 +288,9 @@ const App: React.FC = () => {
               <section className="sidebar-section">
                 <div className="section-header-row" onClick={() => setIsRecentsExpanded(!isRecentsExpanded)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', paddingLeft: '0' }}>
                   <h3>Recents</h3>
-                  <svg className={`section-chevron ${isRecentsExpanded ? 'expanded' : ''}`} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ transition: 'transform 0.2s ease', transform: isRecentsExpanded ? 'rotate(90deg)' : 'rotate(0deg)', color: 'var(--text-tertiary)' }}><polyline points="9 18 15 12 9 6"/></svg>
+                  <svg className={cn("section-chevron", isRecentsExpanded && "expanded")} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" style={{ transition: 'transform 0.2s ease', transform: isRecentsExpanded ? 'rotate(90deg)' : 'rotate(0deg)', color: 'var(--text-tertiary)' }}><polyline points="9 18 15 12 9 6"/></svg>
                 </div>
-                <div className={`sidebar-list accordion-content ${isRecentsExpanded ? 'expanded' : 'collapsed'}`}>
+                <div className={cn("sidebar-list accordion-content", isRecentsExpanded ? "expanded" : "collapsed")}>
                   {sessions.map(s => renderChatItem(s.id, s.name))}
                   {sessions.length === 0 && <div className="placeholder">No recent chats</div>}
                 </div>
@@ -295,49 +306,83 @@ const App: React.FC = () => {
         </aside>
 
         <main className="main-content">
+          <StarsBackground>
           <div className="chat-pane">
             <div className="messages">
               {messages.length === 0 ? (
-                <div className="welcome-screen"><h1 className="welcome-title">Gemini</h1><p className="welcome-subtitle">The high-fidelity AI desktop experience.</p></div>
+                <div className="welcome-screen">
+                  <h1 className="welcome-title">What's new, Alan?</h1>
+                </div>
               ) : (
-                messages.map((m, i) => (
-                  <article key={i} className={`message ${m.role}`}>
-                    <div className="message-content">{m.images?.map(img => (<img key={img} src={img} className="message-image" alt="upload" />))}<p>{m.content}</p></div>
-                  </article>
-                ))
-              )}
-            </div>
-            <div className="input-area">
-              <div className="input-container">
-                {inputAssets.length > 0 && (
-                  <div className="image-preview-container">{inputAssets.map(asset => (
-                    <div key={asset} className="inline-image-preview"><img src={asset} alt="preview" /><button className="remove-img-btn" onClick={() => setInputAssets(prev => prev.filter(a => a !== asset))}>✕</button></div>
-                  ))}</div>
+                  messages.map((m, i) => (
+                    <article key={i} className={`message ${m.role}`}>
+                      <div className="message-content">{m.images?.map(img => (<img key={img} src={img} className="message-image" alt="upload" />))}<p>{m.content}</p></div>
+                    </article>
+                  ))
                 )}
-                <div className="input-flex-row">
-                  <button className="plus-btn" onClick={async () => await (window as any).electronAPI.files.pickFiles()}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-                  <div ref={inputRef} className="content-editable" contentEditable data-placeholder="Ask anything..." onPaste={handlePaste} onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); }
-                    if (e.key === 'Backspace' && !inputRef.current?.innerText.trim() && inputAssets.length > 0) setInputAssets(prev => prev.slice(0, -1));
-                  }} />
-                  <div className="model-selector" ref={modelDropdownRef}>
-                    <button className="model-person-btn" onClick={() => setIsModelDropdownOpen(!isModelDropdownOpen)}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg></button>
-                    {isModelDropdownOpen && (
-                      <div className="popover-menu" style={getModelMenuStyles()}>
-                        {MODELS.map(model => (
-                          <div key={model.id} className="menu-item" onClick={() => { setActiveModel(model); setIsModelDropdownOpen(false); }}>
-                            <div style={{flex: 1}}>{model.name}</div>
-                            {activeModel.id === model.id && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
-                          </div>
-                        ))}
+              </div>
+
+              <div className="input-area">
+                <div className="claude-input-container">
+                  {inputAssets.length > 0 && (
+                    <div className="asset-preview-bar">
+                      {inputAssets.map(asset => (
+                        <div key={asset} className="preview-card">
+                          <img src={asset} alt="preview" />
+                          <span className="preview-tag">Image</span>
+                          <button className="remove-preview" onClick={() => setInputAssets(prev => prev.filter(a => a !== asset))}>✕</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  <textarea 
+                    ref={textareaRef}
+                    className="claude-textarea"
+                    placeholder="How can I help you today?"
+                    value={inputText}
+                    onChange={(e) => setInputText(e.target.value)}
+                    onPaste={handlePaste}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); }
+                    }}
+                    rows={1}
+                  />
+
+                  <div className="claude-input-footer">
+                    <div className="claude-footer-left">
+                      <button className="claude-action-btn" title="Attach assets" onClick={() => (window as any).electronAPI.files.pickFiles()}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      </button>
+                    </div>
+                    <div className="claude-footer-right">
+                      <div className="claude-model-selector" ref={modelDropdownRef} onClick={() => setIsModelDropdownOpen(!isModelDropdownOpen)}>
+                        {activeModel.name}
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
                       </div>
-                    )}
+                      {isModelDropdownOpen && (
+                        <div className="popover-menu" style={getModelMenuStyles()}>
+                          {MODELS.map(model => (
+                            <div key={model.id} className="menu-item" onClick={() => { setActiveModel(model); setIsModelDropdownOpen(false); }}>
+                              <div style={{flex: 1}}>{model.name}</div>
+                              {activeModel.id === model.id && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      <button 
+                        className="claude-send-btn" 
+                        onClick={handleSendMessage} 
+                        disabled={!inputText.trim() && inputAssets.length === 0}
+                      >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="12" y1="19" x2="12" y2="5" /><polyline points="5 12 12 5 19 12" /></svg>
+                      </button>
+                    </div>
                   </div>
-                  <button className="send-btn" onClick={handleSendMessage} disabled={!inputRef.current?.innerText.trim() && inputAssets.length === 0}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="12" y1="19" x2="12" y2="5" /><polyline points="5 12 12 5 19 12" /></svg></button>
                 </div>
               </div>
             </div>
-          </div>
+          </StarsBackground>
           {isTerminalOpen && (
             <div className="terminal-pane">
               <header className="terminal-header"><span>Terminal — Gemini CLI</span><button className="title-btn" onClick={() => setIsTerminalOpen(false)}>✕</button></header>
