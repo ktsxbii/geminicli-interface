@@ -165,7 +165,7 @@ const App: React.FC = () => {
         <aside className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
           <div className="sidebar-content">
             <div className="sidebar-row collapse-container">
-               {/* Static Gemini Logo - Only visible when expanded, or as the base for transition when collapsed */}
+               {/* 1. Static Brand Logo: Visible ONLY when expanded. Non-functional. */}
                <div className={`gemini-logo-static ${isSidebarCollapsed ? "hidden" : ""}`}>
                  <div className="btn-icon-box">
                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
@@ -174,11 +174,11 @@ const App: React.FC = () => {
                  </div>
                </div>
 
-               {/* Interaction Button - Handles the hover transition and click logic */}
+               {/* 2. Anchored Interaction Button: Visible ONLY when compressed. Handles logo-to-icon transition. */}
                <button 
-                 className={`collapse-btn ${isSidebarCollapsed ? "anchored" : "floating-trigger"}`} 
-                 onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                 title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+                 className={`collapse-btn anchored ${!isSidebarCollapsed ? "hidden" : ""}`} 
+                 onClick={() => setIsSidebarCollapsed(false)}
+                 title="Expand sidebar"
                >
                  <div className="btn-icon-box">
                    <div className="icon-wrapper">
@@ -190,6 +190,20 @@ const App: React.FC = () => {
                        <line x1="9" y1="3" x2="9" y2="21" />
                      </svg>
                    </div>
+                 </div>
+               </button>
+
+               {/* 3. Floating Compress Button: Visible ONLY when expanded. Moves with the edge. */}
+               <button 
+                 className={`collapse-btn floating-trigger ${isSidebarCollapsed ? "hidden" : ""}`} 
+                 onClick={() => setIsSidebarCollapsed(true)}
+                 title="Collapse sidebar"
+               >
+                 <div className="btn-icon-box">
+                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                     <line x1="9" y1="3" x2="9" y2="21" />
+                   </svg>
                  </div>
                </button>
             </div>
