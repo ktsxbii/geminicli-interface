@@ -55,15 +55,25 @@ function saveSessions(sessions: SessionMetadata[]) {
 function ensureSessionWorkspace(existingId?: string) {
   const sessions = loadSessions();
   
-  if (!existingId && sessions.length > 0) {
+  // If no sessions exist, seed default 'Chat' and 'test123' sessions
+  if (sessions.length === 0) {
+    const chatID = uuidv4();
+    const testID = uuidv4();
+    sessions.push(
+      { id: chatID, name: 'Chat', createdAt: Date.now(), lastActive: Date.now() },
+      { id: testID, name: 'test123', createdAt: Date.now(), lastActive: Date.now() }
+    );
+    saveSessions(sessions);
+    currentSessionId = chatID;
+  } else if (!existingId) {
     // Default to the most recently active session
     const mostRecent = [...sessions].sort((a, b) => b.lastActive - a.lastActive)[0];
     currentSessionId = mostRecent.id;
   } else {
-    currentSessionId = existingId || uuidv4();
+    currentSessionId = existingId;
   }
 
-  sessionPath = path.join(os.tmpdir(), 'gemini-desktop-sessions', currentSessionId);
+  sessionPath = path.join(os.tmpdir(), 'gemini-desktop-sessions', currentSessionId!);
   if (!fs.existsSync(sessionPath)) {
     fs.mkdirSync(sessionPath, { recursive: true });
   }

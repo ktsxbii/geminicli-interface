@@ -58,11 +58,9 @@ const App: React.FC = () => {
     });
 
     const handleMouseMove = (e: MouseEvent) => {
-      // Check if cursor is over the title bar using class detection
       const target = e.target as HTMLElement;
       const isOverTitleBar = target && target.closest('.title-bar');
 
-      // Transition range: Within 200px width, but below the title bar (40px) and above 170px (40+130)
       const isProximityTriggered = 
         isSidebarCollapsed && 
         !isOverTitleBar &&
@@ -91,10 +89,13 @@ const App: React.FC = () => {
     };
   }, [isSidebarCollapsed]);
 
-  const handleNewChat = () => {
+  const handleNewChat = async () => {
+    // Let backend create a real session
+    await (window as any).electronAPI.sessions.list(); 
     setMessages([]);
     setInputAssets([]);
     if (inputRef.current) inputRef.current.innerText = '';
+    refreshSessions();
   };
 
   const handleSendMessage = () => {
@@ -126,13 +127,8 @@ const App: React.FC = () => {
     setContextMenu({ x: e.clientX, y: e.clientY, sessionId });
   };
 
-  const handleDeleteSession = async (id: string) => {
-    await (window as any).electronAPI.sessions.delete(id);
-    setShowDeleteConfirm(null);
-    refreshSessions();
-  };
-
   const handleRenameSession = async (id: string) => {
+    setContextMenu(null);
     const newName = prompt("Enter new name:");
     if (newName) {
       await (window as any).electronAPI.sessions.rename(id, newName);
@@ -156,6 +152,13 @@ const App: React.FC = () => {
     });
   };
 
+  const handleDeleteSession = async (id: string) => {
+    setContextMenu(null);
+    await (window as any).electronAPI.sessions.delete(id);
+    setShowDeleteConfirm(null);
+    refreshSessions();
+  };
+
   const getUserMenuStyles = () => {
     if (!userBtnRef.current) return {};
     const rect = userBtnRef.current.getBoundingClientRect();
@@ -170,15 +173,13 @@ const App: React.FC = () => {
   const getModelMenuStyles = () => {
     if (!modelDropdownRef.current) return {};
     const rect = modelDropdownRef.current.getBoundingClientRect();
-    const menuWidth = 240; // Defined width for boundary calculation
+    const menuWidth = 240;
     let left = rect.left;
     
-    // If the menu would bleed off the right edge, align it to the right
     if (left + menuWidth > window.innerWidth - 16) {
       left = window.innerWidth - menuWidth - 16;
     }
     
-    // Ensure it doesn't bleed off the left edge (e.g. on very narrow windows)
     left = Math.max(16, left);
 
     return {
@@ -219,7 +220,7 @@ const App: React.FC = () => {
         <aside className={`sidebar ${isSidebarCollapsed ? 'collapsed' : ''}`}>
           <div className="sidebar-content">
             <div className="sidebar-row collapse-container">
-               {/* 1. Static Brand Logo: Visible ONLY when expanded. Non-functional. */}
+               {/* 1. Static Brand Logo */}
                <div className={`gemini-logo-static ${isSidebarCollapsed ? "hidden" : ""}`}>
                  <div className="btn-icon-box">
                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
@@ -228,7 +229,6 @@ const App: React.FC = () => {
                  </div>
                </div>
 
-               {/* 2. Anchored Interaction Button: Visible ONLY when compressed. Handles logo-to-icon transition. */}
                <button 
                  className={`collapse-btn anchored ${!isSidebarCollapsed ? "hidden" : ""} ${isNearLogo ? "hover-proximity" : ""}`} 
                  onClick={() => setIsSidebarCollapsed(false)}
@@ -247,7 +247,6 @@ const App: React.FC = () => {
                  </div>
                </button>
 
-               {/* 3. Floating Compress Button: Visible ONLY when expanded. Moves with the edge. */}
                <button 
                  className={`collapse-btn floating-trigger ${isSidebarCollapsed ? "hidden" : ""}`} 
                  onClick={() => setIsSidebarCollapsed(true)}
@@ -317,9 +316,7 @@ const App: React.FC = () => {
                     <button className="sidebar-btn" onClick={handleAddProject}>
                       <div className="btn-icon-box">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                          {/* Tallest Folder Silhouette matching New Chat proportions */}
                           <path d="M22 13V9C22 7.89543 21.1046 7 20 7H11.5L9.5 5H4C2.89543 5 2 5.89543 2 7V19C2 20.1046 2.89543 21 4 21H13" />
-                          {/* Cutout Plus Sign */}
                           <line x1="18" x2="18" y1="15" y2="23" />
                           <line x1="14" x2="22" y1="19" y2="19" />
                         </svg>
@@ -354,8 +351,13 @@ const App: React.FC = () => {
                     <div className="placeholder">No recent chats</div>
                   ) : (
                     sessions.map(s => (
-                      <div key={s.id} className="list-item" onContextMenu={(e) => handleSidebarContextMenu(e, s.id)}>
-                        <span>{s.name || s.project || 'Untitled Chat'}</span>
+                      <div key={s.id} className="list-item session-item" onContextMenu={(e) => handleSidebarContextMenu(e, s.id)}>
+                        <span className="session-name">{s.name}</span>
+                        <button className="session-more-btn" onClick={(e) => { e.stopPropagation(); handleSidebarContextMenu(e, s.id); }} title="Options">
+                           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                             <circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" />
+                           </svg>
+                        </button>
                       </div>
                     ))
                   )}
