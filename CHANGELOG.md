@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-04-23
+
+### Added
+- **Primary Actions Group**: Consolidated "New chat", "Terminal", and "More" into a unified action cluster.
+- **Dynamic Projects**:
+  - Implemented project creation and management directly in the sidebar.
+  - Added toggleable accordion logic with "fade up and out" transitions.
+  - Created a high-fidelity "Folder Plus" icon with custom cutout aesthetics.
+- **Next-Gen Typography**:
+  - Migrated sidebar to **Instrument Sans** (ChatGPT aesthetic) at a precise **13px** scale.
+  - Unified all sidebar text (headers, buttons, sessions) to a regular weight (400) for a cleaner, modern look.
+- **Enhanced Interactivity**:
+  - **Premium Hover**: Added rounded scale-down transitions to all sidebar elements while preserving label size.
+  - **Contextual Terminal**: Integrated an "Up-Right" arrow indicator that appears on hover for the Terminal toggle.
+  - **Unified Axis**: Realigned the entire sidebar content to a left-anchored `20px` padding scheme.
+
+### Fixed
+- **Transition Artifacts**: Eliminated millisecond text overlapping during sidebar collapse via instant visibility cut-offs.
+- **Interaction Bugs**: Fixed phantom button clicks on the Gemini logo in expanded mode.
+
 ## [1.1.0] - 2026-04-23
 
 ### Added
