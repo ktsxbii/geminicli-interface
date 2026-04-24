@@ -1,38 +1,21 @@
-# Handoff: Gemini Desktop Workspace (v1.2.0)
+# Project Handoff: Gemini Desktop Workspace
 
-## Project Overview
-A high-fidelity Electron + React wrapper for the Gemini CLI, featuring a "Unified Workspace" architecture where GUI file interactions and CLI terminal execution share the same context.
+## Overview
+Gemini desktop interface project providing a rich, visual chat experience with terminal integration and side-panel project management.
 
-## Current State: "Dynamic Actions & Tighter Rhythm"
-- **UI/UX**: Refined "Obsidian" grayscale aesthetic with **Instrument Sans** (13px) for a ChatGPT-inspired professional feel.
-- **Consolidated Sidebar**:
-  - Unified action cluster: **New chat**, **Terminal** (with toggle state), and **More**.
-  - Interactive **Projects** section with creation logic and accordion transitions.
-- **Advanced Interactivity**:
-  - **Premium Hover**: Scale-down transitions that preserve text/icon dimensions via counter-scaling.
-  - **Directional Physics**: Coordinated left-fading collapse and right-fading expansion.
-  - **Contextual Terminal**: Dynamic "Up-Right" hover arrow for the Terminal action.
-- **Unified Axis**: Global left-aligned `20px` padding scheme across all sidebar elements.
-- **Git State**: Version 1.2.0 changes completed.
+## Current State
+- UI: Custom title bar, sidebar with collapsible behavior, centered chat interface.
+- Sidebar: Includes project/recent chat management, user profile, and terminal toggle.
+- Assets: Snow-like background animation, custom Gemini logo styling, rounded-rectangle user avatar.
 
-## Technical Accomplishments
-- **High-Fidelity Scaling**: Implemented `transform: scale` counter-logic to provide tactile feedback without distorting content.
-- **Zero-Flicker Transitions**: Hardened the collapse logic to instantly hide text, preventing millisecond overlaps.
-- **Coordinated Toggles**: Synchronized sidebar and title bar terminal controls.
+## Key Configuration & Customization
+- Styling: Custom `index.css` manages layout (sidebar, titlebar, chat pane).
+- Layout: Chat container centered via `max-width` and `margin: 0 auto`. Sidebar width configurable via CSS variables.
 
-## Key Files
-- `src/main/index.ts`: Window constraints and session management.
-- `src/renderer/App.tsx`: Primary action cluster, Project state, and hover logic.
-- `src/renderer/index.css`: Typography tokens, directional transitions, and refined hover physics.
+## Known Issues/Work Items
+- Ensure Tailwind utility classes (if added later) are correctly configured in `vite.config.ts`.
+- Sidebar icon alignment relies on padding adjustments in `index.css`.
 
-## Next Steps
-1. **Lazy Context Handoff**: Connect sidebar sessions to persistent context preserving AI state.
-2. **Conversational Routing**: Refine "Smart Input" to handle prompt prefixes for the Gemini CLI engine.
-3. **Security Audit**: Sanitize env variables for `node-pty`.
-4. **Cleanup**: Auto-purger for abandoned temporary workspaces.
-
-## Resume Command
-```powershell
-cd C:\Users\nexxw\gemini-desktop-workspace
-npm run dev
-```
+## Git Status
+- Branch: `main`
+- Last Commit: `8ae08ad` (docs: update changelog for v1.2.1)
