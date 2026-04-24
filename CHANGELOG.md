@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2026-04-24
+
+### Added
+- **UI Components**: Introduced `StarsBackground`, `animated-gradient-background`, and `snow` visual components to enhance the application's aesthetics.
+- **Dependencies**: Added `framer-motion`, `clsx`, and `tailwind-merge` for robust styling and animations.
+
+### Fixed
+- **White Screen Crash**: Restored a missing `<StarsBackground>` opening tag in `App.tsx` that previously caused a fatal JSX parsing error preventing the app from rendering.
+
 ## [1.2.0] - 2026-04-23
 
 ### Added
