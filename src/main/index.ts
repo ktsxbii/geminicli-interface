@@ -104,17 +104,15 @@ function createWindow() {
     height: 800,
     minWidth: 600,
     minHeight: 250,
+    frame: false,
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       nodeIntegration: false,
       contextIsolation: true,
     },
-    titleBarStyle: 'hidden',
-    titleBarOverlay: {
-      color: '#1e1e1e',
-      symbolColor: '#ffffff',
-    },
   });
+
+  mainWindow.setMenu(null);
 
   const workspace = ensureSessionWorkspace();
 

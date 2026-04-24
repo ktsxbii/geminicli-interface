@@ -75,6 +75,7 @@ type StarsBackgroundProps = React.ComponentProps<"div"> & {
   speed?: number;
   transition?: SpringOptions;
   starColor?: string;
+  show?: boolean;
 };
 
 export function StarsBackground({
@@ -84,6 +85,7 @@ export function StarsBackground({
   speed = 50,
   transition = { stiffness: 50, damping: 20 },
   starColor = "#fff",
+  show = true,
   ...props
 }: StarsBackgroundProps) {
   const offsetX = useMotionValue(0);
@@ -107,40 +109,42 @@ export function StarsBackground({
   return (
     <div
       className={cn(
-        "relative size-full overflow-hidden bg-[radial-gradient(ellipse_at_bottom,_#0d0d0d_0%,_#000_100%)]",
+        "relative size-full overflow-hidden bg-transparent",
         className,
       )}
       onMouseMove={handleMouseMove}
       {...props}
     >
-      <motion.div style={{ x: springX, y: springY }} className="absolute inset-0">
-        <StarLayer
-          count={1000}
-          size={1}
-          transition={{ repeat: Infinity, duration: speed, ease: "linear" }}
-          starColor={starColor}
-        />
-        <StarLayer
-          count={400}
-          size={1.5}
-          transition={{
-            repeat: Infinity,
-            duration: speed * 2,
-            ease: "linear",
-          }}
-          starColor={starColor}
-        />
-        <StarLayer
-          count={200}
-          size={2}
-          transition={{
-            repeat: Infinity,
-            duration: speed * 3,
-            ease: "linear",
-          }}
-          starColor={starColor}
-        />
-      </motion.div>
+      {show && (
+        <motion.div style={{ x: springX, y: springY }} className="absolute inset-0">
+          <StarLayer
+            count={1000}
+            size={1}
+            transition={{ repeat: Infinity, duration: speed, ease: "linear" }}
+            starColor={starColor}
+          />
+          <StarLayer
+            count={400}
+            size={1.5}
+            transition={{
+              repeat: Infinity,
+              duration: speed * 2,
+              ease: "linear",
+            }}
+            starColor={starColor}
+          />
+          <StarLayer
+            count={200}
+            size={2}
+            transition={{
+              repeat: Infinity,
+              duration: speed * 3,
+              ease: "linear",
+            }}
+            starColor={starColor}
+          />
+        </motion.div>
+      )}
       <div className="relative z-10 size-full">
         {children}
       </div>

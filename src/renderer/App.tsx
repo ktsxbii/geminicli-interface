@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Terminal from './components/Terminal';
 import { StarsBackground } from '@/components/ui/stars';
+import { AuroraBackground } from '@/components/ui/aurora-background';
+import Snow from '@/components/ui/snow';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { cn } from '@/lib/utils';
 
@@ -35,6 +37,11 @@ const App: React.FC = () => {
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isAppearanceModalOpen, setIsAppearanceModalOpen] = useState(false);
+  const [showStars, setShowStars] = useState(true);
+  const [showAuroras, setShowAuroras] = useState(true);
+  const [showSnow, setShowSnow] = useState(false);
   const [isNearLogo, setIsNearLogo] = useState(false);
   const [inputAssets, setInputAssets] = useState<string[]>([]);
   const [contextMenu, setContextMenu] = useState<{ x: number, y: number, sessionId: string } | null>(null);
@@ -71,7 +78,7 @@ const App: React.FC = () => {
       const dx = e.clientX - 30;
       const dy = e.clientY - 64;
       const distance = Math.sqrt(dx * dx + dy * dy);
-      const isProximityTriggered = isSidebarCollapsed && !isOverTitleBar && distance < 200;
+      const isProximityTriggered = isSidebarCollapsed && !isOverTitleBar && distance < 80;
       setIsNearLogo(isProximityTriggered);
     };
 
@@ -216,6 +223,11 @@ const App: React.FC = () => {
     </div>
   );
 
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+    document.documentElement.classList.toggle('light-mode');
+  };
+
   return (
     <div className="container" onDrop={(e) => e.preventDefault()} onDragOver={(e) => e.preventDefault()}>
       <nav className="title-bar">
@@ -225,7 +237,21 @@ const App: React.FC = () => {
         </div>
         <div className="title-bar-center">Gemini</div>
         <div className="title-bar-right">
-          <button className={cn("title-btn terminal-btn", isTerminalOpen && "active")} onClick={() => setIsTerminalOpen(!isTerminalOpen)} title="Toggle Terminal"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 17 10 11 4 5" /><line x1="12" y1="19" x2="20" y2="19" /></svg></button>
+          <button className={cn("title-btn theme-toggle-btn", isAppearanceModalOpen && "active")} onClick={() => setIsAppearanceModalOpen(true)} title="Appearance settings">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              {isDarkMode ? (
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              ) : (
+                <>
+                  <circle cx="12" cy="12" r="5" />
+                  <line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                  <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                </>
+              )}
+            </svg>
+          </button>
           <div className="title-separator" />
           <button className="title-btn window-control" onClick={() => (window as any).electronAPI.window.minimize()}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
           <button className="title-btn window-control" onClick={() => (window as any).electronAPI.window.maximize()}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="5" width="14" height="14" rx="2" ry="2"/></svg></button>
@@ -237,7 +263,7 @@ const App: React.FC = () => {
         <aside className={cn("sidebar", isSidebarCollapsed && "collapsed")}>
           <div className="sidebar-content">
             <div className="sidebar-row collapse-container">
-               <div className={cn("gemini-logo-static", isSidebarCollapsed && "hidden")}><div className="btn-icon-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.85 9.15L22 12L14.85 14.85L12 22L9.15 14.85L2 12L9.15 9.15L12 2Z" /></svg></div></div>
+               <div className={cn("gemini-logo-static", isSidebarCollapsed && "hidden")}><div className="btn-icon-box"><svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.85 9.15L22 12L14.85 14.85L12 22L9.15 14.85L2 12L9.15 9.15L12 2Z" /></svg></div></div>
                <button className={cn("collapse-btn anchored", !isSidebarCollapsed && "hidden", isNearLogo && "hover-proximity")} onClick={() => setIsSidebarCollapsed(false)} title="Expand sidebar">
                  <div className="btn-icon-box"><div className="icon-wrapper"><svg className="gemini-logo-inner" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.85 9.15L22 12L14.85 14.85L12 22L9.15 14.85L2 12L9.15 9.15L12 2Z" /></svg><svg className="expand-logo" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><line x1="9" y1="3" x2="9" y2="21" /></svg></div></div>
                </button>
@@ -306,83 +332,87 @@ const App: React.FC = () => {
         </aside>
 
         <main className="main-content">
-          <StarsBackground>
-          <div className="chat-pane">
-            <div className="messages">
-              {messages.length === 0 ? (
-                <div className="welcome-screen">
-                  <h1 className="welcome-title">What's new, Alan?</h1>
-                </div>
-              ) : (
-                  messages.map((m, i) => (
-                    <article key={i} className={`message ${m.role}`}>
-                      <div className="message-content">{m.images?.map(img => (<img key={img} src={img} className="message-image" alt="upload" />))}<p>{m.content}</p></div>
-                    </article>
-                  ))
-                )}
-              </div>
-
-              <div className="input-area">
-                <div className="claude-input-container">
-                  {inputAssets.length > 0 && (
-                    <div className="asset-preview-bar">
-                      {inputAssets.map(asset => (
-                        <div key={asset} className="preview-card">
-                          <img src={asset} alt="preview" />
-                          <span className="preview-tag">Image</span>
-                          <button className="remove-preview" onClick={() => setInputAssets(prev => prev.filter(a => a !== asset))}>✕</button>
-                        </div>
-                      ))}
+          <AuroraBackground show={showAuroras}>
+            <StarsBackground show={showStars}>
+              {showSnow && <Snow />}
+              <div className="chat-pane">
+                <div className="messages">
+                  {messages.length === 0 ? (
+                    <div className="welcome-screen">
+                      <h1 className="welcome-title">What's new, Alan?</h1>
                     </div>
+                  ) : (
+                    messages.map((m, i) => (
+                      <article key={i} className={`message ${m.role}`}>
+                        <div className="message-content">{m.images?.map(img => (<img key={img} src={img} className="message-image" alt="upload" />))}<p>{m.content}</p></div>
+                      </article>
+                    ))
                   )}
-                  
-                  <textarea 
-                    ref={textareaRef}
-                    className="claude-textarea"
-                    placeholder="How can I help you today?"
-                    value={inputText}
-                    onChange={(e) => setInputText(e.target.value)}
-                    onPaste={handlePaste}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); }
-                    }}
-                    rows={1}
-                  />
+                </div>
 
-                  <div className="claude-input-footer">
-                    <div className="claude-footer-left">
-                      <button className="claude-action-btn" title="Attach assets" onClick={() => (window as any).electronAPI.files.pickFiles()}>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                      </button>
-                    </div>
-                    <div className="claude-footer-right">
-                      <div className="claude-model-selector" ref={modelDropdownRef} onClick={() => setIsModelDropdownOpen(!isModelDropdownOpen)}>
-                        {activeModel.name}
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                <div className="input-area">
+                  <div className="claude-input-container">
+                    {inputAssets.length > 0 && (
+                      <div className="asset-preview-bar">
+                        {inputAssets.map(asset => (
+                          <div key={asset} className="preview-card">
+                            <img src={asset} alt="preview" />
+                            <span className="preview-tag">Image</span>
+                            <button className="remove-preview" onClick={() => setInputAssets(prev => prev.filter(a => a !== asset))}>✕</button>
+                          </div>
+                        ))}
                       </div>
-                      {isModelDropdownOpen && (
-                        <div className="popover-menu" style={getModelMenuStyles()}>
-                          {MODELS.map(model => (
-                            <div key={model.id} className="menu-item" onClick={() => { setActiveModel(model); setIsModelDropdownOpen(false); }}>
-                              <div style={{flex: 1}}>{model.name}</div>
-                              {activeModel.id === model.id && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
-                            </div>
-                          ))}
+                    )}
+                    
+                    <textarea 
+                      ref={textareaRef}
+                      className="claude-textarea"
+                      placeholder="How can I help you today?"
+                      value={inputText}
+                      onChange={(e) => setInputText(e.target.value)}
+                      onPaste={handlePaste}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); }
+                      }}
+                      rows={1}
+                    />
+
+                    <div className="claude-input-footer">
+                      <div className="claude-footer-left">
+                        <button className="claude-action-btn" title="Attach assets" onClick={() => (window as any).electronAPI.files.pickFiles()}>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        </button>
+                      </div>
+                      <div className="claude-footer-right">
+                        <div className="claude-model-selector" ref={modelDropdownRef} onClick={() => setIsModelDropdownOpen(!isModelDropdownOpen)}>
+                          {activeModel.name}
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
                         </div>
-                      )}
-                      <button 
-                        className="claude-send-btn" 
-                        onClick={handleSendMessage} 
-                        disabled={!inputText.trim() && inputAssets.length === 0}
-                      >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="12" y1="19" x2="12" y2="5" /><polyline points="5 12 12 5 19 12" /></svg>
-                      </button>
+                        {isModelDropdownOpen && (
+                          <div className="popover-menu" style={getModelMenuStyles()}>
+                            {MODELS.map(model => (
+                              <div key={model.id} className="menu-item" onClick={() => { setActiveModel(model); setIsModelDropdownOpen(false); }}>
+                                <div style={{flex: 1}}>{model.name}</div>
+                                {activeModel.id === model.id && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        <button 
+                          className="claude-send-btn" 
+                          onClick={handleSendMessage} 
+                          disabled={!inputText.trim() && inputAssets.length === 0}
+                        >
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="12" y1="19" x2="12" y2="5" /><polyline points="5 12 12 5 19 12" /></svg>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </StarsBackground>
+            </StarsBackground>
+          </AuroraBackground>
+
           {isTerminalOpen && (
             <div className="terminal-pane">
               <header className="terminal-header"><span>Terminal — Gemini CLI</span><button className="title-btn" onClick={() => setIsTerminalOpen(false)}>✕</button></header>
@@ -403,7 +433,7 @@ const App: React.FC = () => {
       )}
 
       {contextMenu && (
-        <div className="popover-menu" style={{ position: 'fixed', left: contextMenu.x, top: contextMenu.y }}>
+        <div className="popover-menu" style={{ position: 'fixed', left: contextMenu.x, y: contextMenu.y }}>
           <div className="menu-item" onClick={() => { setContextMenu(null); handleRenameTrigger(contextMenu.sessionId); }}>✏️ Rename</div>
           <div className="menu-item" style={{color: '#ff4d4d'}} onClick={() => { setContextMenu(null); setShowDeleteConfirm(contextMenu.sessionId); }}>🗑️ Delete</div>
         </div>
@@ -417,6 +447,59 @@ const App: React.FC = () => {
             <div style={{display: 'flex', gap: '12px'}}>
               <button className="new-chat-btn" style={{flex: 1}} onClick={() => setShowDeleteConfirm(null)}>Cancel</button>
               <button className="send-btn" style={{background: '#ff4d4d', color: '#fff', borderRadius: '12px', flex: 1, height: '40px', fontWeight: 600}} onClick={() => handleDeleteSession(showDeleteConfirm)}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isAppearanceModalOpen && (
+        <div className="appearance-modal-overlay" onClick={() => setIsAppearanceModalOpen(false)}>
+          <div className="appearance-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="appearance-modal-header">
+              <h3>Appearance</h3>
+              <button className="close-appearance-btn" onClick={() => setIsAppearanceModalOpen(false)}>✕</button>
+            </div>
+            <div className="appearance-settings-list">
+              <div className="appearance-setting-item">
+                <div className="setting-info">
+                  <span className="setting-label">Dark Mode</span>
+                  <span className="setting-desc">Switch between light and dark themes</span>
+                </div>
+                <label className="toggle-switch">
+                  <input type="checkbox" checked={isDarkMode} onChange={toggleTheme} />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+              <div className="appearance-setting-item">
+                <div className="setting-info">
+                  <span className="setting-label">Stars Background</span>
+                  <span className="setting-desc">Enable twinkling stars effect</span>
+                </div>
+                <label className="toggle-switch">
+                  <input type="checkbox" checked={showStars} onChange={() => setShowStars(!showStars)} />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+              <div className="appearance-setting-item">
+                <div className="setting-info">
+                  <span className="setting-label">Aurora Background</span>
+                  <span className="setting-desc">Enable colorful aurora beams</span>
+                </div>
+                <label className="toggle-switch">
+                  <input type="checkbox" checked={showAuroras} onChange={() => setShowAuroras(!showAuroras)} />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+              <div className="appearance-setting-item">
+                <div className="setting-info">
+                  <span className="setting-label">Snow Effect</span>
+                  <span className="setting-desc">Enable falling snow effect</span>
+                </div>
+                <label className="toggle-switch">
+                  <input type="checkbox" checked={showSnow} onChange={() => setShowSnow(!showSnow)} />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
             </div>
           </div>
         </div>

@@ -18,7 +18,7 @@
   --white: #ffffff;
   
   /* Semantic Tokens */
-  --bg-app: var(--gray-950);
+  --bg-app: transparent;
   --bg-sidebar: var(--gray-900);
   --bg-surface: var(--gray-850);
   --bg-input: var(--gray-800);
@@ -33,7 +33,7 @@
   
   /* Layout */
   --sidebar-width: 260px;
-  --sidebar-mini-width: 60px;
+  --sidebar-mini-width: 64px;
   --titlebar-height: 40px;
   --header-height: 48px;
   --input-max-width: 800px;
@@ -49,6 +49,31 @@
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
 }
 
+.light-mode {
+  --gray-950: #f5f5f5;
+  --gray-900: #ffffff;
+  --gray-850: #f9f9f9;
+  --gray-800: #e5e5e5;
+  --gray-700: #d4d4d4;
+  --gray-600: #a3a3a3;
+  --gray-400: #525252;
+  --gray-300: #404040;
+  --gray-100: #171717;
+  --white: #0d0d0d;
+  
+  --bg-hover: rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.15);
+
+  --text-primary: #171717;
+  --text-secondary: #525252;
+  --text-tertiary: #a3a3a3;
+}
+
+.light-mode body, .light-mode html {
+  background-color: #fff;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -59,7 +84,7 @@ body, html {
   width: 100vw;
   height: 100vh;
   font-family: 'Inter', -apple-system, sans-serif;
-  background-color: var(--bg-app);
+  background-color: #000;
   color: var(--text-primary);
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
@@ -71,6 +96,7 @@ body, html {
   height: 100vh;
   width: 100vw;
   position: relative;
+  background-color: transparent;
 }
 
 /* CUSTOM TITLE BAR */
@@ -84,8 +110,9 @@ body, html {
   padding: 0 12px;
   border-bottom: 1px solid var(--border-subtle);
   -webkit-app-region: drag;
-  z-index: 1000;
+  z-index: 3000;
   flex-shrink: 0;
+  position: relative;
 }
 
 .title-bar button {
@@ -109,6 +136,7 @@ body, html {
   color: var(--text-secondary);
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  pointer-events: none;
 }
 
 .title-btn {
@@ -142,6 +170,7 @@ body, html {
   overflow: hidden;
   min-height: 0;
   position: relative;
+  background-color: transparent;
 }
 
 /* SIDEBAR */
@@ -193,7 +222,8 @@ body, html {
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-left: 19px;
   transition: var(--transition);
 }
 
@@ -217,7 +247,8 @@ body, html {
   height: 48px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-left: 19px;
   color: var(--white);
   pointer-events: none;
   z-index: 1;
@@ -225,17 +256,19 @@ body, html {
 
 .icon-wrapper {
   position: relative;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.gemini-logo-inner, .expand-logo {
+.gemini-logo-inner {
   position: absolute;
   transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   color: var(--white) !important;
+  width: 28px;
+  height: 28px;
 }
 
 .expand-logo {
@@ -506,7 +539,7 @@ body, html {
 }
 
 .avatar {
-  width: 32px;
+  width: 40px;
   height: 32px;
   border-radius: 8px;
   background-color: var(--gray-700);
@@ -523,12 +556,162 @@ body, html {
   transform: translate(0, 0) !important;
 }
 
+.theme-toggle-btn.active {
+  color: var(--accent);
+}
+
+/* APPEARANCE MODAL */
+.appearance-modal-overlay {
+  position: fixed;
+  inset: 0;
+  top: var(--titlebar-height);
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.appearance-modal-content {
+  background-color: var(--bg-sidebar);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 480px;
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  animation: modalScaleUp 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.appearance-modal-header {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.appearance-modal-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.close-appearance-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.close-appearance-btn:hover {
+  background-color: var(--bg-hover);
+  color: var(--white);
+}
+
+.appearance-settings-list {
+  padding: 8px 0;
+}
+
+.appearance-setting-item {
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.1s;
+}
+
+.appearance-setting-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.setting-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.setting-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.setting-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* TOGGLE SWITCH */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: var(--gray-700);
+  transition: .3s;
+  border-radius: 24px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input:checked + .toggle-slider {
+  background-color: #3b82f6;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(20px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalScaleUp {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
 /* MAIN CONTENT AREA */
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: transparent; /* Set to transparent */
+  background-color: transparent;
   position: relative;
   min-width: 0;
   height: 100%;
@@ -544,7 +727,7 @@ body, html {
   width: 100%;
   padding-bottom: 24px;
   min-height: 0;
-  background-color: transparent; /* Ensure transparent */
+  background-color: transparent;
 }
 
 .messages {
@@ -807,4 +990,76 @@ body, html {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gray-600);
+}
+
+.aurora-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #0d0d0d;
+  color: white;
+  transition: background-color 0.5s;
+}
+
+.aurora-wrapper {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.aurora-stream {
+  position: absolute;
+  width: 300px;
+  height: 150vh; /* Stretched Vertically */
+  border-radius: 100%;
+  opacity: 0; /* Hidden by default, faded in by animation */
+  filter: blur(120px);
+  will-change: transform;
+}
+
+/* DIAGONAL BEAMS - Bottom-Right to Top-Left Loop */
+.aurora-stream-1 {
+  background: radial-gradient(ellipse at center, #00FF9D 0%, transparent 80%);
+  animation: aurora-diagonal-loop 40s linear infinite;
+  animation-delay: 0s;
+}
+
+.aurora-stream-2 {
+  background: radial-gradient(ellipse at center, #00D4FF 0%, transparent 80%);
+  animation: aurora-diagonal-loop 40s linear infinite;
+  animation-delay: 10s;
+}
+
+.aurora-stream-3 {
+  background: radial-gradient(ellipse at center, #001AFF 0%, transparent 80%);
+  animation: aurora-diagonal-loop 40s linear infinite;
+  animation-delay: 20s;
+}
+
+.aurora-stream-4 {
+  background: radial-gradient(ellipse at center, #BF00FF 0%, transparent 80%);
+  animation: aurora-diagonal-loop 40s linear infinite;
+  animation-delay: 30s;
+}
+
+@keyframes aurora-diagonal-loop {
+  0% { 
+    transform: translate(110vw, 110vh) rotate(35deg) scaleY(1); 
+    opacity: 0; 
+  }
+  10% { 
+    opacity: 0.18; 
+  }
+  50% { 
+    transform: translate(30vw, 30vh) rotate(35deg) scaleY(1.4); 
+    opacity: 0.3; /* Breathing Peak */
+  }
+  90% { 
+    opacity: 0.18; 
+  }
+  100% { 
+    transform: translate(-50vw, -120vh) rotate(35deg) scaleY(1.1); 
+    opacity: 0; 
+  }
 }
